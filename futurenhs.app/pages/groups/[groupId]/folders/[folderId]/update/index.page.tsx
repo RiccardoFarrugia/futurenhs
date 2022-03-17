@@ -78,15 +78,15 @@ export const getServerSideProps: GetServerSideProps = withUser({
 
                             try {
 
-                                const [groupFolder] = await Promise.all([getGroupFolder({ user, groupId, folderId, isForEdit: false })]);                                
+                                const [groupFolder] = await Promise.all([getGroupFolder({ user, groupId, folderId, isForEdit: true })]);                                
                                 const etag = groupFolder.headers.get('etag');
 
                                 props.etag = etag;
                                 props.folder = groupFolder.data;
                                 
                                 form.initialValues = {
-                                    'name': props.folder?.text?.name,
-                                    'description': props.folder?.text?.body
+                                    'Name': props.folder?.text?.name,
+                                    'Description': props.folder?.text?.body
                                 };
 
                                 /**
