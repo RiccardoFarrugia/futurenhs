@@ -12,4 +12,5 @@ public interface IGroupCommand
     Task UpdateGroupAsync(GroupDto groupDto, CancellationToken cancellationToken = default);
     Task CreateGroupSiteAsync(GroupSiteDto groupContentDto, CancellationToken cancellationToken);
     Task DeleteGroupSiteAsync(Guid contentId, CancellationToken cancellationToken);
+    Task CreateGroupAsync(GroupDto groupDto, CancellationToken cancellationToken);
 }

@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
@@ -8,6 +7,7 @@ using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Exceptions;
 using Microsoft.Extensions.Options;
+using System.Data;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
@@ -147,7 +147,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 {
                     if (image is not null)
                     {
-                        group = @group with{ Image = new ImageData(image, _options)};
+                        group = @group with { Image = new ImageData(image, _options) };
                     }
 
                     return group;
@@ -280,6 +280,11 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 _logger.LogError("Error: User request to delete group site failed", queryDefinition);
                 throw new DBConcurrencyException("Error: User request to delete group site failed");
             }
+        }
+
+        public Task CreateGroupAsync(GroupDto group, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

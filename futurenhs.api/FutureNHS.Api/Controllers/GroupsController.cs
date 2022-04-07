@@ -2,7 +2,6 @@ using FutureNHS.Api.Attributes;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Helpers;
-using FutureNHS.Api.Models.Group.Requests;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
@@ -35,10 +34,10 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("users/{userId:guid}/groups")]
-        public async Task<IActionResult> CreateGroupAsync([FromBody] GroupCreateRequest createRequest, CancellationToken cancellationToken)
+        [Route("users/{userId:guid}/groups/{slug}")]
+        public async Task<IActionResult> CreateGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
         {
-            await _groupMembershipService.UserJoinGroupAsync(userId, slug, cancellationToken);
+            await _groupService.CreateGroupAsync(userId, slug, Request.Body, Request.ContentType, cancellationToken);
 
             return Ok();
         }
