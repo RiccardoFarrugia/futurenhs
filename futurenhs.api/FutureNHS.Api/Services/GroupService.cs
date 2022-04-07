@@ -65,7 +65,7 @@ namespace FutureNHS.Api.Services
             return group;
         }
 
-        public async Task CreateGroupAsync(Guid userId, string slug, Stream requestBody, string? contentType, CancellationToken cancellationToken)
+        public async Task CreateGroupAsync(Guid userId, Stream requestBody, string? contentType, CancellationToken cancellationToken)
         {
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, AddGroupRole, cancellationToken);
             if (userCanPerformAction is not true)
@@ -74,7 +74,7 @@ namespace FutureNHS.Api.Services
                 throw new SecurityException($"Error: User does not have access");
             }
 
-            var (group, image) = await UploadGroupImageMultipartContent(userId, slug, requestBody, null, contentType, cancellationToken);
+            var (group, image) = await UploadGroupImageMultipartContent(userId, null, requestBody, null, contentType, cancellationToken);
             try
             {
                 if (image != null)
@@ -85,7 +85,7 @@ namespace FutureNHS.Api.Services
             }
             catch (DBConcurrencyException ex)
             {
-                _logger.LogError(ex, $"Error: CreateImageAsync - Error adding image to group {0}", slug);
+                _logger.LogError(ex, $"Error: CreateImageAsync - Error adding image to group {0}", null);
                 if (image != null)
                 {
                     await _blobStorageProvider.DeleteFileAsync(image.FileName);
@@ -93,7 +93,7 @@ namespace FutureNHS.Api.Services
                 }
             }
 
-            await _groupCommand.CreateGroupAsync(group, cancellationToken);
+            await _groupCommand.CreateGroupAsync(userId, group, cancellationToken);
         }
 
         private async Task UpdateGroupAsync(Guid userId, string slug, GroupDto groupDto, CancellationToken cancellationToken)
@@ -163,7 +163,6 @@ namespace FutureNHS.Api.Services
             }
 
             //TODO - Delete old image of everything succeeds and the image has been removed or replaced 
-
 
         }
 
@@ -311,6 +310,8 @@ namespace FutureNHS.Api.Services
                 }
 
                 formValues.TryGetValue("imageid", out var image);
+                formValues.TryGetValue("groupOwnerId", out var groupOwner);
+                formValues.TryGetValue("userGroupAdmins", out var userGroupAdmins);
 
                 // Validation
                 if (name.ToString().Length > 255)
@@ -335,6 +336,35 @@ namespace FutureNHS.Api.Services
                     }
                 }
 
+                var groupOwnerId = Guid.TryParse(groupOwner, out var groupOwnerGuid) ? (Guid?)groupOwnerGuid : null;
+                if (groupOwnerId.HasValue)
+                {
+                    if (groupOwnerId == new Guid())
+                    {
+                        throw new ArgumentOutOfRangeException($"Incorrect Id provided");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentNullException($"No Group Owner Id provided.");
+                }
+
+                var userGroupAdminGuids = new List<Guid?>();
+                foreach (var user in userGroupAdmins)
+                {
+                    var groupUserId = Guid.TryParse(user, out var groupUserGuid) ? (Guid?)groupUserGuid : null;
+
+                    if (groupUserId.HasValue)
+                    {
+                        if (groupUserId == new Guid())
+                        {
+                            throw new ArgumentOutOfRangeException($"Incorrect Id provided");
+                        }
+
+                        userGroupAdminGuids.Add(groupUserId);
+                    }
+                }
+
                 groupDto = new GroupDto
                 {
                     Slug = slug,
@@ -342,16 +372,16 @@ namespace FutureNHS.Api.Services
                     StrapLine = _htmlSanitizer.Sanitize(strapLine),
                     ThemeId = themeId,
                     ImageId = imageId,
+                    GroupOwnerId = groupOwnerId,
+                    GroupUserAdmins = userGroupAdminGuids,
                     ModifiedBy = userId,
                     ModifiedAtUtc = now,
                     RowVersion = rowVersion
                 };
-
             }
 
             return (groupDto, imageDto);
         }
-
 
         private static Encoding? GetEncoding(MultipartSection section)
         {
@@ -364,6 +394,5 @@ namespace FutureNHS.Api.Services
             }
             return mediaType.Encoding;
         }
-
     }
 }

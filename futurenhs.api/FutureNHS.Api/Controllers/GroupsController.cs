@@ -34,14 +34,13 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("users/{userId:guid}/groups/{slug}")]
-        public async Task<IActionResult> CreateGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        [Route("users/{userId:guid}/groups")]
+        public async Task<IActionResult> CreateGroupAsync(Guid userId, CancellationToken cancellationToken)
         {
-            await _groupService.CreateGroupAsync(userId, slug, Request.Body, Request.ContentType, cancellationToken);
+            await _groupService.CreateGroupAsync(userId, Request.Body, Request.ContentType, cancellationToken);
 
             return Ok();
         }
-
 
         [HttpGet]
         [Route("users/{userId:guid}/groups")]

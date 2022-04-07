@@ -135,7 +135,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =
-                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS StrapLine, g.PublicGroup AS IsPublic,( SELECT      CASE 
+                @"SELECT g.Id AS Id, g.ThemeId AS ThemeId, g.Slug AS Slug, g.Name AS Name, g.Subtitle AS StrapLine, g.PublicGroup AS IsPublic, groupUser.MembershipUser_Id AS OwnerId, membershipUser.FirstName AS OwnerFirstName, membershipUser.Surname AS OwnerSurname,( SELECT CASE 
                                                                                     WHEN        groupUser.MembershipUser_Id = @UserId
                                                                                     AND         groupUser.Approved = 1
                                                                                     AND         groupUser.Rejected = 0
@@ -149,6 +149,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 				FROM [Group] g
                 LEFT JOIN Image image ON image.Id = g.ImageId  
                 LEFT JOIN GroupUser groupUser ON GroupUser.Group_Id = g.Id  
+                LEFT JOIN MembershipUser membershipUser ON membershipUser.Id = g.GroupOwner
                 WHERE g.Slug = @Slug AND g.IsDeleted = 0";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);

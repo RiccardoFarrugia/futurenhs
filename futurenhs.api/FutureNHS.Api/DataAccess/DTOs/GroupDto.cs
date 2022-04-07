@@ -1,5 +1,4 @@
 ﻿using FutureNHS.Api.DataAccess.Models;
-using Newtonsoft.Json;
 
 namespace FutureNHS.Api.DataAccess.DTOs
 {
@@ -17,5 +16,7 @@ namespace FutureNHS.Api.DataAccess.DTOs
         public DateTime ModifiedAtUtc { get; init; }
         public Guid? ModifiedBy { get; init; }
         public bool IsDeleted { get; init; }
+        public Guid? GroupOwnerId { get; init; }
+        public List<Guid?> GroupUserAdmins { get; init; }
     }
 }

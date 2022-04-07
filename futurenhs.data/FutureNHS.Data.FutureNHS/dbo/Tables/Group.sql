@@ -17,7 +17,7 @@
     [Section_Id]         UNIQUEIDENTIFIER NULL,
     [PublicGroup]        BIT              DEFAULT ((0)) NOT NULL,
     [HiddenGroup]        BIT              DEFAULT ((0)) NOT NULL,
-    [MembershipUser_Id]  UNIQUEIDENTIFIER NULL,
+    [GroupOwner]         UNIQUEIDENTIFIER NULL,
     [Subtitle]           NVARCHAR (255)   NULL,
     [Introduction]       NVARCHAR (4000)  DEFAULT ('') NOT NULL,
     [AboutUs]            NVARCHAR (4000)  NULL,
@@ -31,11 +31,10 @@
     CONSTRAINT [PK_dbo.Group] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Group_dbo.Group_Group_Id] FOREIGN KEY ([Parent_GroupId]) REFERENCES [dbo].[Group] ([Id]),
     CONSTRAINT [FK_dbo.Group_dbo.Image_HeaderImage] FOREIGN KEY ([ImageId]) REFERENCES [dbo].[Image] ([Id]),
-    CONSTRAINT [FK_dbo.Group_dbo.MembershipUser_MembershipUser_Id] FOREIGN KEY ([MembershipUser_Id]) REFERENCES [dbo].[MembershipUser] ([Id]),
+    CONSTRAINT [FK_dbo.Group_dbo.GroupOwner_MembershipUser_Id] FOREIGN KEY ([GroupOwner]) REFERENCES [dbo].[MembershipUser] ([Id]),
     CONSTRAINT [FK_dbo.Group_dbo.Section_Section_Id] FOREIGN KEY ([Section_Id]) REFERENCES [dbo].[Section] ([Id]),
     CONSTRAINT [FK_dbo.Group_dbo.MembershipUser_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[MembershipUser] ([Id]),
     CONSTRAINT [FK_dbo.Group_dbo.MembershipUser_ModifiedBy] FOREIGN KEY ([ModifiedBy]) REFERENCES [dbo].[MembershipUser] ([Id])
-
 );
 
 
@@ -51,7 +50,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IX_Group_Slug]
 
 GO
 CREATE NONCLUSTERED INDEX [IX_MembershipUser_Id]
-    ON [dbo].[Group]([MembershipUser_Id] ASC);
+    ON [dbo].[Group]([GroupOwner] ASC);
 
 
 GO
