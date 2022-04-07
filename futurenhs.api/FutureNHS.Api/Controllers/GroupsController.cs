@@ -2,6 +2,7 @@ using FutureNHS.Api.Attributes;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.Helpers;
+using FutureNHS.Api.Models.Group.Requests;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
@@ -23,7 +24,7 @@ namespace FutureNHS.Api.Controllers
         private readonly IGroupService _groupService;
         private readonly IEtagService _etagService;
 
-        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider,IPermissionsService permissionsService, IGroupMembershipService groupMembershipService, IGroupService groupService, IEtagService etagService)
+        public GroupsController(ILogger<GroupsController> logger, IGroupDataProvider groupDataProvider, IPermissionsService permissionsService, IGroupMembershipService groupMembershipService, IGroupService groupService, IEtagService etagService)
         {
             _logger = logger;
             _groupDataProvider = groupDataProvider;
@@ -32,6 +33,16 @@ namespace FutureNHS.Api.Controllers
             _groupService = groupService;
             _etagService = etagService;
         }
+
+        [HttpPost]
+        [Route("users/{userId:guid}/groups")]
+        public async Task<IActionResult> CreateGroupAsync([FromBody] GroupCreateRequest createRequest, CancellationToken cancellationToken)
+        {
+            await _groupMembershipService.UserJoinGroupAsync(userId, slug, cancellationToken);
+
+            return Ok();
+        }
+
 
         [HttpGet]
         [Route("users/{userId:guid}/groups")]
@@ -105,7 +116,7 @@ namespace FutureNHS.Api.Controllers
                 return BadRequest("The data submitted is not in the multiform format");
             }
             var rowVersion = _etagService.GetIfMatch();
-            await _groupService.UpdateGroupMultipartDocument(userId, slug, rowVersion, Request.Body, Request.ContentType,cancellationToken);
+            await _groupService.UpdateGroupMultipartDocument(userId, slug, rowVersion, Request.Body, Request.ContentType, cancellationToken);
 
             return Ok();
         }
