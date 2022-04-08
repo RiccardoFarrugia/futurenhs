@@ -6,6 +6,7 @@ import { createFileForm } from './create-file';
 import { updateGroupForm } from './update-group';
 import { updateGroupMemberForm } from './update-group-member';
 import { formTypes } from '@constants/forms';
+import {createGroupForm} from './create-group';
 
 export default {
     [formTypes.CREATE_DISCUSSION]: createDiscussionForm,
@@ -14,5 +15,6 @@ export default {
     [formTypes.CREATE_FILE]: createFileForm,
     [formTypes.GROUP_FOLDER]: groupFolderForm,
     [formTypes.UPDATE_GROUP]: updateGroupForm,
-    [formTypes.UPDATE_GROUP_MEMBER]: updateGroupMemberForm
+    [formTypes.UPDATE_GROUP_MEMBER]: updateGroupMemberForm,
+    [formTypes.CREATE_GROUP]: createGroupForm
 };
