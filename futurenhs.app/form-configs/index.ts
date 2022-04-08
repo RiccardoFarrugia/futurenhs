@@ -4,9 +4,11 @@ import { createDiscussionCommentReplyForm } from './create-discussion-comment-re
 import { groupFolderForm } from './group-folder'
 import { createFileForm } from './create-file'
 import { updateGroupForm } from './update-group'
+import {createGroupForm} from './create-group'
 import { updateGroupMemberForm } from './update-group-member'
 import { inviteUserForm } from './invite-user'
 import { formTypes } from '@constants/forms'
+
 
 export default {
     [formTypes.CREATE_DISCUSSION]: createDiscussionForm,
@@ -18,4 +20,5 @@ export default {
     [formTypes.UPDATE_GROUP]: updateGroupForm,
     [formTypes.UPDATE_GROUP_MEMBER]: updateGroupMemberForm,
     [formTypes.INVITE_USER]: inviteUserForm,
-}
+    [formTypes.CREATE_GROUP]: createGroupForm
+};

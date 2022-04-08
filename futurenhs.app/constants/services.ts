@@ -21,6 +21,7 @@ export const enum services {
     GET_SITE_USERS = 'getSiteUsers',
     GET_USER = 'getUser',
     POST_SITE_USER_INVITE = 'postSiteUserInvite',
+    POST_GROUP = 'postGroup',
     POST_GROUP_DISCUSSION = 'postGroupDiscussion',
     POST_GROUP_DISCUSSION_COMMENT = 'postGroupDiscussionComment',
     POST_GROUP_DISCUSSION_COMMENT_REPLY = 'postGroupDiscussionCommentReply',
