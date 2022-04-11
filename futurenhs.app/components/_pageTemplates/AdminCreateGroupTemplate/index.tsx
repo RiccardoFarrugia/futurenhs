@@ -4,8 +4,8 @@ import { formTypes } from '@constants/forms';
 import { FormWithErrorSummary } from '@components/FormWithErrorSummary';
 import { LayoutColumnContainer } from '@components/LayoutColumnContainer';
 import { LayoutColumn } from '@components/LayoutColumn';
-import { selectFormErrors, selectFormDefaultFields } from '@selectors/forms';
-import { FormErrors } from '@appTypes/form';
+import { selectForm } from '@selectors/forms';
+import { FormErrors, FormConfig } from '@appTypes/form';
 import { routes } from '@constants/routes';
 import { getServiceErrorDataValidationErrors } from '@services/index';
 import { getGenericFormError } from '@helpers/util/form';
@@ -21,9 +21,9 @@ export const AdminCreateGroupTemplate: (props: Props) => JSX.Element = ({
     contentText
 }) => {
 
-    const [errors, setErrors] = useState(selectFormErrors(forms, formTypes.CREATE_GROUP));
+    const formConfig: FormConfig = selectForm(forms, formTypes.CREATE_GROUP)
+    const [errors, setErrors] = useState(formConfig?.errors);
 
-    const fields = selectFormDefaultFields(forms, formTypes.CREATE_GROUP);
 
     const { secondaryHeading } = contentText
 
@@ -56,8 +56,7 @@ export const AdminCreateGroupTemplate: (props: Props) => JSX.Element = ({
                     <LayoutColumn tablet={8}>
                     <FormWithErrorSummary
                             csrfToken={csrfToken}
-                            formId={formTypes.CREATE_GROUP}
-                            fields={fields}
+                            formConfig={formConfig}
                             errors={errors}
                             text={{
                                 errorSummary: {

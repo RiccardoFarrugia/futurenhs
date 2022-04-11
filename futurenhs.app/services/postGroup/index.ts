@@ -42,7 +42,7 @@ export const postGroup = async ({
 
     if(!ok){
 
-        throw new ServiceError('Error posting group', {
+        throw new ServiceError('An unexpected error occurred when attempting to post the group', {
             serviceId: services.POST_GROUP,
             status: status,
             statusText: statusText,
