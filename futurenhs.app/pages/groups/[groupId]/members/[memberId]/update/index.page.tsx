@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { routeParams } from '@constants/routes'
+import { formTypes } from '@constants/forms'
 import { layoutIds, groupTabIds } from '@constants/routes'
 import { withUser } from '@hofs/withUser'
 import { withRoutes } from '@hofs/withRoutes'
@@ -14,8 +15,9 @@ import { selectUser, selectParam } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 
-import { GroupMemberTemplate } from '@components/_pageTemplates/GroupMemberTemplate'
+import { GroupMemberUpdateTemplate } from '@components/_pageTemplates/GroupMemberUpdateTemplate'
 import { Props } from '@components/_pageTemplates/GroupMemberTemplate/interfaces'
+import { actions } from '@constants/actions'
 
 const routeId: string = '4502d395-7c37-4e80-92b7-65886de858ef'
 const props: Partial<Props> = {}
@@ -38,6 +40,13 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         context: GetServerSidePropsContext
                     ) => {
                         const user: User = selectUser(context)
+
+                        if (!props.actions.includes(actions.GROUPS_MEMBERS_EDIT)) {
+                            return {
+                                notFound: true,
+                            }
+                        }
+
                         const groupId: string = selectParam(
                             context,
                             routeParams.GROUPID
@@ -47,6 +56,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             routeParams.MEMBERID
                         )
 
+                        const form: any =
+                            props.forms[formTypes.UPDATE_GROUP_MEMBER]
 
                         /**
                          * Get data from services
@@ -61,9 +72,11 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             props.tabId = groupTabIds.MEMBERS
                             props.pageTitle = `${props.entityText.title} - ${
                                 props.member.firstName ?? ''
-                            } ${props.member.lastName ?? ''}`
+                            } ${props.member.lastName ?? ''} - Edit`
 
-
+                            form.initialValues = {
+                                'member-role': props.member.role,
+                            }
                         } catch (error) {
                             return handleSSRErrorProps({ props, error })
                         }
@@ -82,4 +95,4 @@ export const getServerSideProps: GetServerSideProps = withUser({
 /**
  * Export page template
  */
-export default GroupMemberTemplate
+export default GroupMemberUpdateTemplate
