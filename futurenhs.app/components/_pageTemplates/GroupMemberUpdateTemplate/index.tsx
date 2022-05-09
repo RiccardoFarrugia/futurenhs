@@ -39,6 +39,7 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
         isDeleteUserConfirmationModalOpen,
         setIsDeleteUserConfirmationModalOpen,
     ] = useState(false)
+    const [hasConfirmedDelete, setHasConfirmedDelete] = useState(false)
 
     const updateFormConfig: FormConfig = selectForm(
         forms,
@@ -88,25 +89,29 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
      */
     const handleDeleteMemberSubmit = async (): Promise<FormErrors> => {
         return new Promise((resolve) => {
+
             setIsDeleteUserConfirmationModalOpen(true)
 
-            
-            const headers = getStandardServiceHeaders({ csrfToken, etag })
-            
-            deleteGroupMember({ groupId, groupUserId: member.id, user, headers})
-            .then(() => {
+            if(hasConfirmedDelete) {
 
+                const headers = getStandardServiceHeaders({ csrfToken, etag })
+                
+                deleteGroupMember({ groupId, groupUserId: member.id, user, headers})
+                .then(() => {
+    
+                    resolve({})
+                })
+                .catch((error) => {
+                    const errors: FormErrors =
+                        getServiceErrorDataValidationErrors(error) ||
+                        getGenericFormError(error)
+    
+                    setErrors(errors)
+                    resolve(errors)
+                })
                 resolve({})
-            })
-            .catch((error) => {
-                const errors: FormErrors =
-                    getServiceErrorDataValidationErrors(error) ||
-                    getGenericFormError(error)
 
-                setErrors(errors)
-                resolve(errors)
-            })
-            resolve({})
+            }
         })
     }
 
@@ -120,6 +125,8 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
      * Handle client-side delete submission confirmation
      */
     const handleDeleteMemberSubmitConfirm = (): any => {
+        setHasConfirmedDelete(true)
+        handleDeleteMemberSubmit()
         setIsDeleteUserConfirmationModalOpen(false)
     }
 
