@@ -66,7 +66,7 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         try {
                             const [memberData] = await Promise.all([
-                                getGroupMember({ groupId, user, memberId, isForEdit: true }),
+                                getGroupMember({ groupId, user, memberId, isForEdit: false }),
                             ])
                             const etag = memberData.headers?.get('etag');
 
@@ -83,7 +83,6 @@ export const getServerSideProps: GetServerSideProps = withUser({
                                 'member-role': props.member.role,
                             }
 
-                            console.log(props);
                         } catch (error) {
                             return handleSSRErrorProps({ props, error })
                         }

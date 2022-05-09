@@ -14,6 +14,10 @@ import { Dialog } from '@components/Dialog'
 import { FormErrors, FormConfig } from '@appTypes/form'
 
 import { Props } from './interfaces'
+import { deleteGroupMember } from '@services/deleteGroupMember'
+import { getStandardServiceHeaders } from '@helpers/fetch'
+import { getServiceErrorDataValidationErrors } from '@services/index'
+import { getGenericFormError } from '@helpers/util/form'
 
 /**
  * Group member template
@@ -25,6 +29,8 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
     forms,
     actions,
     routes,
+    user,
+    groupId,
     etag
 }) => {
     const router = useRouter()
@@ -84,7 +90,22 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
         return new Promise((resolve) => {
             setIsDeleteUserConfirmationModalOpen(true)
 
-            // TODO - pending API
+            
+            const headers = getStandardServiceHeaders({ csrfToken, etag })
+            
+            deleteGroupMember({ groupId, groupUserId: member.id, user, headers})
+            .then(() => {
+
+                resolve({})
+            })
+            .catch((error) => {
+                const errors: FormErrors =
+                    getServiceErrorDataValidationErrors(error) ||
+                    getGenericFormError(error)
+
+                setErrors(errors)
+                resolve(errors)
+            })
             resolve({})
         })
     }
@@ -96,7 +117,7 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
         setIsDeleteUserConfirmationModalOpen(false)
 
     /**
-     * Handle client-side delete submission cancellation
+     * Handle client-side delete submission confirmation
      */
     const handleDeleteMemberSubmitConfirm = (): any => {
         setIsDeleteUserConfirmationModalOpen(false)
