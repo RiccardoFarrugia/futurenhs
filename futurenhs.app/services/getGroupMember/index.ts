@@ -14,6 +14,7 @@ declare type Options = {
     user: User
     groupId: string
     memberId: string
+    isForEdit?: boolean
 }
 
 declare type Dependencies = {
@@ -22,7 +23,7 @@ declare type Dependencies = {
 }
 
 export const getGroupMember = async (
-    { user, groupId, memberId }: Options,
+    { user, groupId, memberId, isForEdit }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<GroupMember>> => {
     const serviceResponse: ServiceResponse<GroupMember> = {
@@ -35,7 +36,8 @@ export const getGroupMember = async (
 
     const id: string = user.id
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/${memberId}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/${memberId}${isForEdit ? '/update' : ''}`
+    console.log(apiUrl);
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),
@@ -45,7 +47,7 @@ export const getGroupMember = async (
     const apiData: ApiResponse<any> = apiResponse.json
     const apiMeta: any = apiResponse.meta
 
-    const { ok, status, statusText } = apiMeta
+    const { ok, status, statusText, headers } = apiMeta
 
     if (!ok) {
         throw new ServiceError(
@@ -59,6 +61,7 @@ export const getGroupMember = async (
         )
     }
 
+    serviceResponse.headers = headers
     serviceResponse.data = {
         id: apiData.id ?? '',
         firstName: apiData.firstName ?? '',

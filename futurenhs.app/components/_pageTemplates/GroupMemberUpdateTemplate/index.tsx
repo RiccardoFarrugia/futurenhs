@@ -25,6 +25,7 @@ export const GroupMemberUpdateTemplate: (props: Props) => JSX.Element = ({
     forms,
     actions,
     routes,
+    etag
 }) => {
     const router = useRouter()
     const errorSummaryRef: any = useRef()

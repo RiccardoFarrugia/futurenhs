@@ -11,7 +11,7 @@ import { withGroup } from '@hofs/withGroup'
 import { withForms } from '@hofs/withForms'
 import { withTextContent } from '@hofs/withTextContent'
 import { getGroupMember } from '@services/getGroupMember'
-import { selectUser, selectParam } from '@selectors/context'
+import { selectUser, selectParam, selectCsrfToken, selectFormData } from '@selectors/context'
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 
@@ -40,6 +40,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                         context: GetServerSidePropsContext
                     ) => {
                         const user: User = selectUser(context)
+                        const csrfToken: string = selectCsrfToken(context)
+                        const currentValues: any = selectFormData(context)
 
                         if (!props.actions.includes(actions.GROUPS_MEMBERS_EDIT)) {
                             return {
@@ -64,8 +66,11 @@ export const getServerSideProps: GetServerSideProps = withUser({
                          */
                         try {
                             const [memberData] = await Promise.all([
-                                getGroupMember({ groupId, user, memberId }),
+                                getGroupMember({ groupId, user, memberId, isForEdit: true }),
                             ])
+                            const etag = memberData.headers?.get('etag');
+
+                            props.etag = etag
 
                             props.member = memberData.data
                             props.layoutId = layoutIds.GROUP
@@ -77,6 +82,8 @@ export const getServerSideProps: GetServerSideProps = withUser({
                             form.initialValues = {
                                 'member-role': props.member.role,
                             }
+
+                            console.log(props);
                         } catch (error) {
                             return handleSSRErrorProps({ props, error })
                         }
