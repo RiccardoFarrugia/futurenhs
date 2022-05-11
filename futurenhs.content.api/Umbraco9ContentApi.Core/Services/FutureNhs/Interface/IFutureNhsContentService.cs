@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
-    using Umbraco9ContentApi.Core.Models.Dto;
     using ContentModel = Models.Content.ContentModel;
 
     public interface IFutureNhsContentService
@@ -37,6 +36,7 @@
         /// Resolves the published content asynchronous.
         /// </summary>
         /// <param name="content">The content.</param>
+        /// <param name="propertyGroupAlias">The property group alias.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<ContentModel> ResolvePublishedContentAsync(IPublishedContent content, string propertyGroupAlias, CancellationToken cancellationToken);
@@ -50,12 +50,14 @@
         Task<ContentModel> ResolveDraftContentAsync(IContent content, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Creates the asynchronous.
+        /// Creates the content asynchronous.
         /// </summary>
-        /// <param name="generalWebPage">The general web page.</param>
+        /// <param name="Name">The name.</param>
+        /// <param name="parentId">The parent identifier.</param>
+        /// <param name="documentTypeAlias">The document type alias.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        Task<IContent> CreateContentAsync(GeneralWebPageDto generalWebPage, CancellationToken cancellationToken);
+        Task<IContent> CreateContentAsync(string Name, Guid parentId, string documentTypeAlias, CancellationToken cancellationToken);
 
         /// <summary>
         /// Deletes the asynchronous.

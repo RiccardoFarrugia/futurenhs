@@ -17,15 +17,27 @@ namespace FutureNHS.Api.DataAccess.Repositories.Write
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<string>> CreateContentAsync(GeneralWebPageCreateRequest createRequest, CancellationToken cancellationToken)
+        public Task<ApiResponse<string>> CreatePageAsync(CreatePageRequest createRequest, CancellationToken cancellationToken)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Post, "api/content/create", JsonContent.Create(createRequest));
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Post, "api/page", JsonContent.Create(createRequest));
         }
 
         /// <inheritdoc />
-        public Task<ApiResponse<string>> UpdateContentAsync(Guid contentId, PageContentModel pageContent, CancellationToken cancellationToken)
+        public Task<ApiResponse<string>> CreateBlockAsync(CreateBlockRequest createRequest, CancellationToken cancellationToken)
         {
-            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Put, $"api/content/{contentId}", JsonContent.Create(pageContent));
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Post, $"api/block", JsonContent.Create(createRequest));
+        }
+
+        /// <inheritdoc />
+        public Task<ApiResponse<string>> UpdatePageAsync(Guid contentId, PageModel pageModel, CancellationToken cancellationToken)
+        {
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Put, $"api/page/{contentId}", JsonContent.Create(pageModel));
+        }
+
+        /// <inheritdoc />
+        public Task<ApiResponse<string>> UpdateBlockAsync(Guid blockId, ContentModel blockModel, CancellationToken cancellationToken)
+        {
+            return _contentApiClientProvider.SendRequestAsync<ApiResponse<string>>(HttpMethod.Put, $"api/block/{blockId}", JsonContent.Create(blockModel));
         }
 
         /// <inheritdoc />

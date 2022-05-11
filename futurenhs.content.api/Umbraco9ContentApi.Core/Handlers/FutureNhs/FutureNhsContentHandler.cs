@@ -6,7 +6,6 @@
     using Services.FutureNhs.Interface;
     using Umbraco9ContentApi.Core.Models;
     using Umbraco9ContentApi.Core.Models.Content;
-    using Umbraco9ContentApi.Core.Models.Dto;
     using Umbraco9ContentApi.Core.Models.Response;
 
     /// <summary>
@@ -28,36 +27,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> CreateContentAsync(string pageName, string pageParentId, CancellationToken cancellationToken)
-        {
-            ApiResponse<string> response = new ApiResponse<string>();
-            Guid pageParentGuid;
-            var pageFolderGuid = _config.GetValue<Guid>("AppKeys:Folders:Groups");
-
-            // If a parent page id is supplied and is a valid guid, set that page as the page parent. Else use the pages folder.
-            Guid parentId = pageParentId is not null && Guid.TryParse(pageParentId, out pageParentGuid)
-                ? pageParentGuid
-                : pageFolderGuid;
-
-            var generalWebPageDto = new GeneralWebPageDto()
-            {
-                PageName = pageName,
-                PageParentId = parentId,
-            };
-
-            var result = _futureNhsContentService.CreateContentAsync(generalWebPageDto, cancellationToken).Result;
-
-            if (result is null)
-            {
-                errorList.Add("Content creation failed.");
-                return response.Failure(errorList, "Failed.");
-            }
-
-            return response.Success(result.Key.ToString(), "Success.");
-        }
-
-        /// <inheritdoc />
-        public async Task<ApiResponse<string>> UpdateContentAsync(Guid id, string title, string description, PageContentModel pageContent, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> UpdateContentAsync(Guid id, string title, string description, PageModel pageContent, CancellationToken cancellationToken)
         {
             ApiResponse<string> response = new ApiResponse<string>();
             if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description) && pageContent is null)
@@ -98,7 +68,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<string>> UpdateContentAsync(Guid id, PageContentModel pageContent, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> UpdatePageAsync(Guid id, PageModel pageContent, CancellationToken cancellationToken)
         {
             ApiResponse<string> response = new ApiResponse<string>();
 
@@ -138,7 +108,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<ContentModel>> GetContentPublishedAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<ApiResponse<ContentModel>> GetPublishedContentAsync(Guid id, CancellationToken cancellationToken)
         {
             ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
             var content = await _futureNhsContentService.GetPublishedContentAsync(id, cancellationToken);
@@ -154,7 +124,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<ApiResponse<ContentModel>> GetContentDraftAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<ApiResponse<ContentModel>> GetDraftContentAsync(Guid id, CancellationToken cancellationToken)
         {
             ApiResponse<ContentModel> response = new ApiResponse<ContentModel>();
             var content = await _futureNhsContentService.GetDraftContentAsync(id, cancellationToken);
@@ -187,7 +157,7 @@
 
 
         /// <inheritdoc />
-        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllContentAsync(CancellationToken cancellationToken)
+        public async Task<ApiResponse<IEnumerable<ContentModel>>> GetAllPagesAsync(CancellationToken cancellationToken)
         {
             ApiResponse<IEnumerable<ContentModel>> response = new ApiResponse<IEnumerable<ContentModel>>();
             var contentModels = new List<ContentModel>();

@@ -12,7 +12,6 @@
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco9ContentApi.Core.Models;
-    using Umbraco9ContentApi.Core.Models.Dto;
 
     /// <summary>
     /// Futrue Nhs Content Handler Tests.
@@ -39,34 +38,6 @@
                .Build();
         }
 
-        #region Create Content Tests
-
-        /// <summary>
-        /// Creates the content page name success.
-        /// </summary>
-        [Test]
-        public async Task CreateContent_PageName_Success()
-        {
-            // Arrange
-            var newPageName = "Test Page";
-            var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var mockContent = GetMockContentItem(contentId);
-            var contentHandler = GetHandler(_config);
-
-            _mockFutureNhsContentService
-                .Setup(x => x.CreateContentAsync(It.IsAny<GeneralWebPageDto>(), cancellationToken))
-                .ReturnsAsync(mockContent.Object);
-
-            // Act
-            var contentResult = await contentHandler.CreateContentAsync(newPageName, null, cancellationToken);
-
-            // Assert
-            Assert.IsNotNull(contentResult);
-            Assert.AreEqual(contentResult.Data, contentId.ToString());
-        }
-
-        #endregion
-
         #region Update Content Tests
 
         #region Update Content Success Tests
@@ -81,7 +52,7 @@
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
             var newPageName = "Update Title";
             var newDescription = "Update Description";
-            var newPageContent = new PageContentModel();
+            var newPageContent = new PageModel();
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
@@ -178,7 +149,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var newPageContent = new PageContentModel();
+            var newPageContent = new PageModel();
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
@@ -210,7 +181,7 @@
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
             var newPageName = "Update Title";
             var newDescription = "Update Description";
-            var newPageContent = new PageContentModel();
+            var newPageContent = new PageModel();
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
@@ -307,7 +278,7 @@
         {
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
-            var newPageContent = new PageContentModel();
+            var newPageContent = new PageModel();
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
@@ -344,7 +315,7 @@
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
             var newPageName = "Update Title";
             var newDescription = "Update Description";
-            var newPageContent = new PageContentModel();
+            var newPageContent = new PageModel();
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
@@ -440,7 +411,7 @@
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
 
-            var newPageContent = new PageContentModel();
+            var newPageContent = new PageModel();
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(true);
 
@@ -474,7 +445,7 @@
 
             var newPageName = "Update Title";
             var newDescription = "Update Description";
-            var newPageContent = new PageContentModel();
+            var newPageContent = new PageModel();
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
 
@@ -570,7 +541,7 @@
             // Arrange
             var contentId = new Guid("81D3DB69-62FF-4549-824D-25A4B9F37626");
 
-            var newPageContent = new PageContentModel();
+            var newPageContent = new PageModel();
             var mockContent = GetMockContentItem(contentId);
             var mockPublishedContent = GetMockPublishedContentItem(false);
 

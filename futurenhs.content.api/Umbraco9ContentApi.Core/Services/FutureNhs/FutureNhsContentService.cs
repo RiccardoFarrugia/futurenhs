@@ -5,7 +5,6 @@
     using Umbraco.Cms.Core.Models;
     using Umbraco.Cms.Core.Models.PublishedContent;
     using Umbraco.Cms.Core.Services;
-    using Umbraco9ContentApi.Core.Models.Dto;
     using Umbraco9ContentApi.Core.Resolvers.Interfaces;
     using ContentModel = Models.Content.ContentModel;
 
@@ -58,11 +57,10 @@
         }
 
         /// <inheritdoc />
-        public async Task<IContent?> CreateContentAsync(GeneralWebPageDto generalWebPage, CancellationToken cancellationToken)
+        public async Task<IContent?> CreateContentAsync(string name, Guid parentId, string documentTypeAlias, CancellationToken cancellationToken)
         {
-            var parentContent = _contentService.GetById(generalWebPage.PageParentId);
-            var result = _contentService.CreateAndSave(generalWebPage.PageName, parentContent, generalWebPage.DocumentTypeAlias);
-            return result;
+            var parentContent = _contentService.GetById(parentId);
+            return _contentService.CreateAndSave(name, parentContent, documentTypeAlias);
         }
 
         /// <inheritdoc />

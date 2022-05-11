@@ -1,6 +1,7 @@
 ﻿namespace Umbraco9ContentApi.Core.Handlers.FutureNhs.Interface
 {
     using Umbraco9ContentApi.Core.Models.Content;
+    using Umbraco9ContentApi.Core.Models.Requests;
     using Umbraco9ContentApi.Core.Models.Response;
 
     public interface IFutureNhsBlockHandler
@@ -40,5 +41,20 @@
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<ApiResponse<IEnumerable<string>>> GetBlockLabelsAsync(Guid blockId, CancellationToken cancellationToken);
+        /// <summary>
+        /// Creates the block asynchronous.
+        /// </summary>
+        /// <param name="createRequest">The create request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<string>> CreateBlockAsync(CreateBlockRequest createRequest, CancellationToken cancellationToken);
+        /// <summary>
+        /// Updates the block asynchronous.
+        /// </summary>
+        /// <param name="blockId">The block identifier.</param>
+        /// <param name="blockModel">The block model.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task<ApiResponse<string>> UpdateBlockAsync(Guid blockId, ContentModel blockModel, CancellationToken cancellationToken);
     }
 }
